@@ -23,6 +23,15 @@ class WindhagerHttpClient:
         await client.close()
         return json
 
+    async def fetchDataPoint(self, oid):
+        client = aiohttp.ClientSession()
+        auth = DigestAuth("USER", self.password, client)
+        ret = await auth.request("GET", "http://" + self.host + "/api/1.0/datapoint" + oid)
+        json = await ret.json()
+
+        await client.close()
+        return json
+
     async def update(self, oid, value):
         client = aiohttp.ClientSession()
         auth = DigestAuth("USER", self.password, client)
@@ -439,7 +448,7 @@ class WindhagerHttpClient:
 
         # Lecture de tous les OIDs trouvés
         for oid in self.oids:
-            json = await self.fetch(oid)
+            json = await self.fetchDataPoint(oid)
             if "value" in json:
                 ret["oids"][oid] = json["value"]
             else:
