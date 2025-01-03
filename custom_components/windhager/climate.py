@@ -122,14 +122,14 @@ class WindhagerThermostatClimate(CoordinatorEntity, ClimateEntity):
     @property
     def current_temperature(self):
         return float(
-            self.coordinator.data.get("oids").get(self._prefix + "/0/0/1/0")
-        ) - float(self.coordinator.data.get("oids").get(self._prefix + "/0/3/58/0"))
+            self.coordinator.data.get("oids").get(self._prefix + "/5/0/1/0")
+        ) - float(self.coordinator.data.get("oids").get(self._prefix + "/5/3/58/0"))
 
     @property
     def target_temperature(self):
         return float(
-            self.coordinator.data.get("oids").get(self._prefix + "/0/1/1/0")
-        ) - float(self.coordinator.data.get("oids").get(self._prefix + "/0/3/58/0"))
+            self.coordinator.data.get("oids").get(self._prefix + "/5/1/1/0")
+        ) - float(self.coordinator.data.get("oids").get(self._prefix + "/5/3/58/0"))
 
     @property
     def target_temperature_step(self):
@@ -162,35 +162,35 @@ class WindhagerThermostatClimate(CoordinatorEntity, ClimateEntity):
         return self._preset_modes
 
     def raw_selected_mode(self):
-        return int(self.coordinator.data.get("oids").get(self._prefix + "/0/3/50/0"))
+        return int(self.coordinator.data.get("oids").get(self._prefix + "/5/3/50/0"))
 
     def raw_custom_temp_remaining_time(self):
-        return int(self.coordinator.data.get("oids").get(self._prefix + "/0/2/10/0"))
+        return int(self.coordinator.data.get("oids").get(self._prefix + "/5/2/10/0"))
 
     def raw_preset_mode(self):
-        return int(self.coordinator.data.get("oids").get(self._prefix + "/0/3/50/0"))
+        return int(self.coordinator.data.get("oids").get(self._prefix + "/5/3/50/0"))
 
     async def async_set_hvac_mode(self, hvac_mode):
         """Set new target hvac mode."""
 
     async def async_set_preset_mode(self, preset_mode):
         id_mode = self._preset_modes.index(preset_mode)
-        await self.client.update(self._prefix + "/0/3/50/0", str(id_mode))
+        await self.client.update(self._prefix + "/5/3/50/0", str(id_mode))
         # Désactivation du mode manuel au besoin
         if self.raw_custom_temp_remaining_time() > 0:
-            await self.client.update(self._prefix + "/0/2/10/0", "0")
+            await self.client.update(self._prefix + "/5/2/10/0", "0")
         await self.coordinator.async_request_refresh()
 
     async def async_set_temperature(self, **kwargs):
         await self.client.update(
-            self._prefix + "/0/3/4/0", str(kwargs.get(ATTR_TEMPERATURE))
+            self._prefix + "/5/3/4/0", str(kwargs.get(ATTR_TEMPERATURE))
         )
         # Duration of custom temperature (max 400 minutes)
-        await self.client.update(self._prefix + "/0/2/10/0", "400")
+        await self.client.update(self._prefix + "/5/2/10/0", "400")
         await self.coordinator.async_request_refresh()
 
     async def set_current_temp_compensation(self, compensation):
-        await self.client.update(self._prefix + "/0/3/58/0", str(compensation))
+        await self.client.update(self._prefix + "/5/3/58/0", str(compensation))
         await self.coordinator.async_request_refresh()
 
 
@@ -248,11 +248,11 @@ class WindhagerThermostatClimateWithoutBias(CoordinatorEntity, ClimateEntity):
 
     @property
     def current_temperature(self):
-        return float(self.coordinator.data.get("oids").get(self._prefix + "/0/0/1/0"))
+        return float(self.coordinator.data.get("oids").get(self._prefix + "/5/0/1/0"))
 
     @property
     def target_temperature(self):
-        return float(self.coordinator.data.get("oids").get(self._prefix + "/0/1/1/0"))
+        return float(self.coordinator.data.get("oids").get(self._prefix + "/5/1/1/0"))
 
     @property
     def target_temperature_step(self):
@@ -285,29 +285,29 @@ class WindhagerThermostatClimateWithoutBias(CoordinatorEntity, ClimateEntity):
         return self._preset_modes
 
     def raw_selected_mode(self):
-        return int(self.coordinator.data.get("oids").get(self._prefix + "/0/3/50/0"))
+        return int(self.coordinator.data.get("oids").get(self._prefix + "/5/3/50/0"))
 
     def raw_custom_temp_remaining_time(self):
-        return int(self.coordinator.data.get("oids").get(self._prefix + "/0/2/10/0"))
+        return int(self.coordinator.data.get("oids").get(self._prefix + "/5/2/10/0"))
 
     def raw_preset_mode(self):
-        return int(self.coordinator.data.get("oids").get(self._prefix + "/0/3/50/0"))
+        return int(self.coordinator.data.get("oids").get(self._prefix + "/5/3/50/0"))
 
     async def async_set_hvac_mode(self, hvac_mode):
         """Set new target hvac mode."""
 
     async def async_set_preset_mode(self, preset_mode):
         id_mode = self._preset_modes.index(preset_mode)
-        await self.client.update(self._prefix + "/0/3/50/0", str(id_mode))
+        await self.client.update(self._prefix + "/5/3/50/0", str(id_mode))
         # Désactivation du mode manuel au besoin
         if self.raw_custom_temp_remaining_time() > 0:
-            await self.client.update(self._prefix + "/0/2/10/0", "0")
+            await self.client.update(self._prefix + "/5/2/10/0", "0")
         await self.coordinator.async_request_refresh()
 
     async def async_set_temperature(self, **kwargs):
         await self.client.update(
-            self._prefix + "/0/3/4/0", str(kwargs.get(ATTR_TEMPERATURE))
+            self._prefix + "/5/3/4/0", str(kwargs.get(ATTR_TEMPERATURE))
         )
         # Duration of custom temperature (max 400 minutes)
-        await self.client.update(self._prefix + "/0/2/10/0", "400")
+        await self.client.update(self._prefix + "/5/2/10/0", "400")
         await self.coordinator.async_request_refresh()
